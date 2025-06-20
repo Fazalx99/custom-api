@@ -1,150 +1,175 @@
-# Bookstore API Documentation
+# Bookstore API
 
-This document describes the RESTful API for managing a book collection. The API is built with Node.js, Express, and MongoDB, and supports CRUD operations for books. The base URL is `http://localhost:3000`.
+A RESTful API for managing a book collection, built with Node.js, Express, and MongoDB, with an optional frontend interface for interaction.
 
-## Endpoints
+## APIs and Functionality
 
-### 1. Get All Books
-- **Endpoint**: `/api/books`
-- **Method**: GET
-- **Description**: Retrieves a list of all books in the database.
-- **Request Body**: None
-- **Response**:
-  - **Status**: 200 OK
-  - **Content-Type**: application/json
-  - **Body**: Array of book objects, each containing `_id`, `title`, `author`, `year`, `genre`, and `__v`.
-- **Sample Response**:
-  ```json
-  [
-    {
-      "_id": "60c72b2f9b1e8a1f5c8b4567",
-      "title": "The Great Gatsby",
-      "author": "F. Scott Fitzgerald",
-      "year": 1925,
-      "genre": "Fiction",
-      "__v": 0
-    },
-    {
-      "_id": "60c72b2f9b1e8a1f5c8b4568",
-      "title": "1984",
-      "author": "George Orwell",
-      "year": 1949,
-      "genre": "Dystopian",
-      "__v": 0
-    }
-  ]
-  ```
-- **Error Responses**:
-  - **500 Internal Server Error**: `{ "message": "Error retrieving books" }`
+The API provides four endpoints for CRUD operations on books:
 
-### 2. Create a New Book
-- **Endpoint**: `/api/books`
-- **Method**: POST
-- **Description**: Creates a new book in the database.
-- **Request Body**:
-  - **Content-Type**: application/json
-  - **Fields** (all required):
-    - `title` (string): The title of the book.
-    - `author` (string): The author of the book.
-    - `year` (number): The publication year.
-    - `genre` (string): The genre of the book.
-  - **Sample Request Body**:
-    ```json
-    {
-      "title": "1984",
-      "author": "George Orwell",
-      "year": 1949,
-      "genre": "Dystopian"
-    }
-    ```
-- **Response**:
-  - **Status**: 201 Created
-  - **Content-Type**: application/json
-  - **Body**: The created book object with `_id`, `title`, `author`, `year`, `genre`, and `__v`.
-- **Sample Response**:
-  ```json
-  {
-    "_id": "60c72b2f9b1e8a1f5c8b4568",
-    "title": "1984",
-    "author": "George Orwell",
-    "year": 1949,
-    "genre": "Dystopian",
-    "__v": 0
-  }
-  ```
-- **Error Responses**:
-  - **400 Bad Request**: `{ "message": "Invalid book data" }` (e.g., missing required fields)
-  - **500 Internal Server Error**: `{ "message": "Error creating book" }`
+1. **GET /api/books**
+   - **Functionality**: Retrieves a list of all books in the database.
+   - **Response**: JSON array of book objects (each with `_id`, `title`, `author`, `year`, `genre`).
 
-### 3. Update a Book
-- **Endpoint**: `/api/books/:id`
-- **Method**: PUT
-- **Description**: Updates an existing book by its ID. Only provided fields are updated; others remain unchanged.
-- **URL Parameters**:
-  - `:id` (string): The MongoDB `_id` of the book to update.
-- **Request Body**:
-  - **Content-Type**: application/json
-  - **Fields** (optional):
-    - `title` (string): New title of the book.
-    - `author` (string): New author of the book.
-    - `year` (number): New publication year.
-    - `genre` (string): New genre of the book.
-  - **Sample Request Body**:
-    ```json
-    {
-      "title": "The Great Gatsby (Updated)",
-      "year": 1926
-    }
-    ```
-- **Response**:
-  - **Status**: 200 OK
-  - **Content-Type**: application/json
-  - **Body**: The updated book object.
-- **Sample Response**:
-  ```json
-  {
-    "_id": "60c72b2f9b1e8a1f5c8b4567",
-    "title": "The Great Gatsby (Updated)",
-    "author": "F. Scott Fitzgerald",
-    "year": 1926,
-    "genre": "Fiction",
-    "__v": 0
-  }
-  ```
-- **Error Responses**:
-  - **400 Bad Request**: `{ "message": "Invalid update data" }`
-  - **404 Not Found**: `{ "message": "Book not found" }`
-  - **500 Internal Server Error**: `{ "message": "Error updating book" }`
+2. **POST /api/books**
+   - **Functionality**: Creates a new book.
+   - **Request Body**: JSON with `title` (string), `author` (string), `year` (number), `genre` (string).
+   - **Response**: JSON of the created book.
 
-### 4. Delete a Book
-- **Endpoint**: `/api/books/:id`
-- **Method**: DELETE
-- **Description**: Deletes a book by its ID.
-- **URL Parameters**:
-  - `:id` (string): The MongoDB `_id` of the book to delete.
-- **Request Body**: None
-- **Response**:
-  - **Status**: 200 OK
-  - **Content-Type**: application/json
-  - **Body**: Confirmation message.
-- **Sample Response**:
-  ```json
-  { "message": "Book deleted" }
-  ```
-- **Error Responses**:
-  - **404 Not Found**: `{ "message": "Book not found" }`
-  - **500 Internal Server Error**: `{ "message": "Error deleting book" }`
+3. **PUT /api/books/:id**
+   - **Functionality**: Updates an existing book by its `_id`. Only provided fields are updated.
+   - **Request Body**: JSON with optional fields (`title`, `author`, `year`, `genre`).
+   - **Response**: JSON of the updated book.
 
-## Usage Notes
-- **Base URL**: All endpoints are relative to `http://localhost:3000`.
-- **Authentication**: No authentication is required.
-- **Error Handling**: Errors return a JSON object with a `message` field describing the issue.
-- **Testing**: Use tools like Postman, cURL, or the provided frontend (`http://localhost:3000`) to interact with the API.
-- **Prerequisites**: Ensure MongoDB is running locally on port 27017 and the server is started with `npm start`.
+4. **DELETE /api/books/:id**
+   - **Functionality**: Deletes a book by its `_id`.
+   - **Response**: JSON confirmation message.
 
-## Example Workflow
-1. Use `GET /api/books` to list all books and note the `_id` of a book.
+For detailed endpoint information, see `API-Documentation.md`.
+
+## Database Integration
+
+- **Database**: MongoDB, a NoSQL database, is used to store book data.
+- **Schema**: Books are stored in a `books` collection with fields: `title` (string, required), `author` (string, required), `year` (number, required), `genre` (string, required).
+- **Integration**:
+  - The `mongoose` library connects the Express server to MongoDB (running locally on `mongodb://localhost:27017/bookstore`).
+  - Mongoose models define the book schema and handle CRUD operations.
+  - The server connects to MongoDB on startup, logging success or errors.
+
+## How to Run the Server
+
+### Prerequisites
+- Node.js (v14 or higher)
+- MongoDB (running locally on port 27017)
+- Git (optional, for cloning)
+
+### Setup
+1. Clone or download the repository:
+   ```bash
+   git clone https://github.com/Fazalx99/bookstore-api.git
+   cd bookstore-api
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start MongoDB:
+   ```bash
+   mongod
+   ```
+4. Start the server:
+   ```bash
+   npm start
+   ```
+   - The server runs on `http://localhost:3000`.
+   - Logs will confirm MongoDB connection and server startup.
+
+## How to Run the Frontend Locally (Optional)
+
+The frontend is a single-page HTML application served by the Express server.
+
+1. Ensure the server is running (see above).
+2. Open a browser and navigate to `http://localhost:3000`.
+3. Use the interface to:
+   - Add books via the form (calls `POST /api/books`).
+   - View books in the list (calls `GET /api/books`).
+   - Edit books using the "Edit" button (calls `PUT /api/books/:id`).
+   - Delete books using the "Delete" button (calls `DELETE /api/books/:id`).
+
+The frontend uses Tailwind CSS for styling and JavaScript (`fetch`) for API calls.
+
+## How to Interact with the API
+
+### Tools
+- **Postman**: For testing API requests.
+- **cURL**: For command-line testing.
+- **Browser Console**: For JavaScript-based testing with `fetch`.
+
+### Sample Requests and Responses
+
+1. **GET /api/books**
+   - **cURL**:
+     ```bash
+     curl http://localhost:3000/api/books
+     ```
+   - **Sample Response**:
+     ```json
+     [
+       {
+         "_id": "60c72b2f9b1e8a1f5c8b4567",
+         "title": "The Great Gatsby",
+         "author": "F. Scott Fitzgerald",
+         "year": 1925,
+         "genre": "Fiction",
+         "__v": 0
+       }
+     ]
+     ```
+
+2. **POST /api/books**
+   - **cURL**:
+     ```bash
+     curl -X POST http://localhost:3000/api/books -H "Content-Type: application/json" -d '{"title":"1984","author":"George Orwell","year":1949,"genre":"Dystopian"}'
+     ```
+   - **Sample Response**:
+     ```json
+     {
+       "_id": "60c72b2f9b1e8a1f5c8b4568",
+       "title": "1984",
+       "author": "George Orwell",
+       "year": 1949,
+       "genre": "Dystopian",
+       "__v": 0
+     }
+     ```
+
+3. **PUT /api/books/:id**
+   - **cURL** (replace `:id` with actual `_id`):
+     ```bash
+     curl -X PUT http://localhost:3000/api/books/60c72b2f9b1e8a1f5c8b4567 -H "Content-Type: application/json" -d '{"title":"The Great Gatsby (Updated)","year":1926}'
+     ```
+   - **Sample Response**:
+     ```json
+     {
+       "_id": "60c72b2f9b1e8a1f5c8b4567",
+       "title": "The Great Gatsby (Updated)",
+       "author": "F. Scott Fitzgerald",
+       "year": 1926,
+       "genre": "Fiction",
+       "__v": 0
+     }
+     ```
+
+4. **DELETE /api/books/:id**
+   - **cURL** (replace `:id` with actual `_id`):
+     ```bash
+     curl -X DELETE http://localhost:3000/api/books/60c72b2f9b1e8a1f5c8b4567
+     ```
+   - **Sample Response**:
+     ```json
+     { "message": "Book deleted" }
+     ```
+
+### Testing Workflow
+1. Use `GET /api/books` to list books and note an `_id`.
 2. Use `POST /api/books` to add a new book.
-3. Use `PUT /api/books/:id` to update a book’s details.
-4. Use `DELETE /api/books/:id` to remove a book.
-5. Verify changes with `GET /api/books` or the frontend.
+3. Use `PUT /api/books/:id` to update a book.
+4. Use `DELETE /api/books/:id` to delete a book.
+5. Verify changes via `GET /api/books` or the frontend.
+
+For detailed endpoint specifications, see `API-Documentation.md`.
+
+## Folder Structure
+- `server.js`: Main server file with API logic.
+- `public/`: Frontend files.
+  - `index.html`: Frontend interface.
+  - `styles.css`: Custom CSS styles.
+- `package.json`: Project dependencies and scripts.
+- `README.md`: This file.
+- `API-Documentation.md`: Detailed API documentation.
+
+## Notes
+- Ensure MongoDB is running before starting the server.
+- The API has no authentication; add it for production use.
+- Error responses include a `message` field (e.g., `{ "message": "Book not found" }`).
+
+For issues or contributions, see the GitHub repository: `https://github.com/Fazalx99/bookstore-api`.
